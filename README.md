@@ -1,69 +1,69 @@
-# Mutual_Exemplar
-A contrastive learning based semi-supervised segmentation network for medical image segmentation
-This repository contains the implementation of a novel contrastive learning based semi-segmentation networks to segment the surgical tools.
+# Learning Representations by Maximizing Mutual Information Across Views for Medical Image Segmentation
 
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/min-max-similarity-a-contrastive-learning/semi-supervised-semantic-segmentation-on-33)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-33?p=min-max-similarity-a-contrastive-learning)
-[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/min-max-similarity-a-contrastive-learning/semi-supervised-semantic-segmentation-on-2017)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-2017?p=min-max-similarity-a-contrastive-learning)
+This repository contains the implementation of **Mutual Exemplar**, a novel **contrastive learning-based semi-supervised segmentation network** designed for **medical image segmentation**. Our method maximizes **mutual information across multiple views** to enhance feature representation and improve segmentation performance.
 
-<div align=center><img src="https://github.com/AngeLouCN/Min_Max_Similarity/blob/main/img/architecture.jpg" width="1000" height="450" alt="Result"/></div>
-<p align="center"><b>Fig. 1. The architecture of Min-Max Similarity.</b></p>
+<div align="center">
+  <img src="https://github.com/MutualExemplar/Learning-Representations-by-Maximizing-Mutual-Information-Across-Views-Reproduction/blob/main/assets/architecture.png" width="1000" height="450" alt="Architecture"/>
+</div>
+<p align="center"><b>Fig. 1. The architecture of the Mutual Exemplar model.</b></p>
 
+---
 
-## Environment
+## **Environment Setup**
 
-- python==3.6
-- packages:
+- Python 3.6  
+- Install dependencies using `requirements.txt`:
+  ```bash
+  pip install -r requirements.txt
+  ```
+
+### **Clone the Repository**
+```bash
+git clone https://github.com/MutualExemplar/Learning-Representations-by-Maximizing-Mutual-Information-Across-Views-Reproduction.git
+cd Learning-Representations-by-Maximizing-Mutual-Information-Across-Views-Reproduction
 ```
-conda install pytorch==1.8.0 torchvision==0.9.0 torchaudio==0.8.0 cudatoolkit=11.1 -c pytorch -c conda-forge
-```
-```
-conda install opencv-python pillow numpy matplotlib
-```
-- Clone this repository
-```
-git clone https://github.com/AngeLouCN/Min_Max_Similarity
-```
-## Data Preparation
 
-We use Kvasir dataset to test its performance:
-- [Kvasir-instrument](https://datasets.simula.no/kvasir-instrument/)
+---
 
-**File structure**
+## **Dataset Preparation**
+Our approach has been evaluated on **multiple medical image segmentation datasets**, including:
+
+- **[Kvasir-instrument](https://datasets.simula.no/kvasir-instrument/)**
+- **[EndoVis’17](https://endovissub-instrument.grand-challenge.org/)**
+- **[ART-NET](https://www.sciencedirect.com/science/article/pii/S1361841521000861)**
+- **[RoboTool](https://link.springer.com/chapter/10.1007/978-3-030-59710-8_17)**
+- **[FEES](https://fees-challenge.grand-challenge.org/)**
+
+### **Dataset Directory Structure**
+Ensure that the datasets are stored in the following directory structure:
+
 ```
 |-- data
 |   |-- kvasir
 |   |   |-- train
-|   |   |   |--image
-|   |   |   |--mask
+|   |   |   |-- image
+|   |   |   |-- mask
 |   |   |-- test
-|   |   |   |--image
-|   |   |   |--mask
-
-
-**You can also test on some other public medical image segmentation dataset with above file architecture**
-
-## Usage
-
-- **Training:**
-You can change the hyper-parameters like labeled ratio(here used 5%,20% and 50%), batch size, and e.g. in ```train.py```, and directly run the code.
-
-- **Testing:**
-You can change the dataset name in ```test.py``` and run the code.
-
-## Segmentation Performance
-<div align=center><img src="https://github.com/AngeLouCN/Min_Max_Similarity/blob/main/img/seg_result.jpg" width="650" height="550" alt="Result"/></div>
-<p align="center"><b>Fig. 2. Visual comparison of our method with state-of-the-art models. Segmentation results are shown for 50% of labeled training data for Kvasir-instrument, EndVis’17, ART-NET and RoboTool, and 2.4% labeled training data for cochlear implant. From left to right are EndoVis’17, Kvasir-instrument, ART-NET, RoboTool, Cochlear implant and region of interest (ROI) of Cochlear implant. </b></p>
-
-
-## Citation
+|   |   |   |-- image
+|   |   |   |-- mask
 ```
-@article{lou2023min,
-  title={Min-Max Similarity: A Contrastive Semi-Supervised Deep Learning Network for Surgical Tools Segmentation},
-  author={Lou, Ange and Tawfik, Kareem and Yao, Xing and Liu, Ziteng and Noble, Jack},
-  journal={IEEE Transactions on Medical Imaging},
-  year={2023},
-  publisher={IEEE}
-}
+
+---
+
+## **Usage**
+
+### **1. Training**
+Modify hyperparameters such as **labeled ratio** (e.g., 5%, 20%, 50%), **batch size**, and other training parameters in `train.py`.  
+Then, run:
+```bash
+python train.py
 ```
-## Acknowledgement
-Our code is based on the [Duo-SegNet](https://github.com/himashi92/Duo-SegNet), we thank their excellent work and repository.
+
+### **2. Testing**
+To evaluate the model on different datasets, update the dataset name in `test.py` and run:
+```bash
+python test.py
+```
+
+
+
