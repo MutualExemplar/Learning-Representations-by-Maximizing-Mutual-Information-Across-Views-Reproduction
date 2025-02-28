@@ -1,0 +1,27 @@
+# Ignore Python cache and compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Ignore logs, temp files, and checkpoints
+checkpoints/
+
+# Ignore configuration files (if they contain secrets)
+configs/
+
+# Ignore large datasets (if they are not meant to be version-controlled)
+data/
+
+# Ignore environment files (if using virtual environments)
+venv/
+.env
+
+# Ignore model-related large files (if applicable)
+model/
+*.h5
+*.ckpt
+*.pth

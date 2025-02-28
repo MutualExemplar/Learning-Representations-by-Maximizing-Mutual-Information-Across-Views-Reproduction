@@ -1,0 +1,11 @@
+02/27 04:36:03 PM - INFO - logs/kvasir/test/saved_images_1/
+02/27 04:36:15 PM - INFO - Model 1 DSC : 0.0389
+02/27 04:36:15 PM - INFO - Model 1 MAE : 0.1615
+02/27 04:36:15 PM - INFO - logs/kvasir/test/saved_images_2/
+02/27 04:36:19 PM - INFO - Model 2 DSC : 0.0301
+02/27 04:36:19 PM - INFO - Model 2 MAE : 0.1754
+02/27 04:36:19 PM - INFO - logs/kvasir/test/saved_images_3/
+02/27 04:36:23 PM - INFO - Model 3 DSC : 0.0352
+02/27 04:36:23 PM - INFO - Model 3 MAE : 0.1978
+02/27 04:36:23 PM - INFO - Average DSC (3 models): 0.0347
+02/27 04:36:23 PM - INFO - Average MAE (3 models): 0.1782
