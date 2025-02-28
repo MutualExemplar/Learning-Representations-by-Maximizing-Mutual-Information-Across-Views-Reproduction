@@ -2,6 +2,8 @@
 A contrastive learning based semi-supervised segmentation network for medical image segmentation
 This repository contains the implementation of a novel contrastive learning based semi-segmentation networks to segment the surgical tools.
 
+
+
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/min-max-similarity-a-contrastive-learning/semi-supervised-semantic-segmentation-on-33)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-33?p=min-max-similarity-a-contrastive-learning)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/min-max-similarity-a-contrastive-learning/semi-supervised-semantic-segmentation-on-2017)](https://paperswithcode.com/sota/semi-supervised-semantic-segmentation-on-2017?p=min-max-similarity-a-contrastive-learning)
 
