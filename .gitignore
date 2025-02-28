@@ -21,7 +21,7 @@ venv/
 .env
 
 # Ignore model-related large files (if applicable)
-model/
-*.h5
-*.ckpt
-*.pth
+model/pretrained_unet.py
+model/__pycache__
+model/.ipynb_checkpoints
+
