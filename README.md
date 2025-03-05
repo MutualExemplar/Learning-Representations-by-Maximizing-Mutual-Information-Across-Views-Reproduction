@@ -72,15 +72,17 @@ python test.py
 ---
 
 ## **References**
-- **Papers:** (1) Lou, A., Tawfik, K., Yao, X., Liu, Z., Noble, J.: Min-max similarity: A contrastive
-semi-supervised deep learning network for surgical tools segmentation. IEEE Transactions on Medical Imaging (2023)
-(2) Paszke, A., Gross, S., Massa, F., Lerer, A., Bradbury, J., Chanan, G., Killeen,
-T., Lin, Z., Gimelshein, N., Antiga, L., et al.: Pytorch: An imperative style, highperformance deep learning library. Advances in neural information processing systems 32 (2019)
+- **Papers:**
+  1. Lou, A., Tawfik, K., Yao, X., Liu, Z., Noble, J.: Min-max similarity: A contrastive  
+     semi-supervised deep learning network for surgical tools segmentation.  
+     *IEEE Transactions on Medical Imaging (2023)*
+  
+  2. Paszke, A., Gross, S., Massa, F., Lerer, A., Bradbury, J., Chanan, G., Killeen,  
+     T., Lin, Z., Gimelshein, N., Antiga, L., et al.: Pytorch: An imperative style,  
+     high-performance deep learning library. *Advances in Neural Information Processing Systems 32 (2019)*
 
 - **Repository** [Min_Max_Similarity](https://github.com/AngeLouCN/Min_Max_Similarity.git)
-```
 My work is based on the pre-existing code base of Min_Max_Similarity.
-```
 
 ---
 
