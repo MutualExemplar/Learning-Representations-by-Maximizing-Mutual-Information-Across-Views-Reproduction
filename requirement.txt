@@ -6,3 +6,6 @@ opencv-python
 pillow
 numpy
 matplotlib
+tensorboardX
+scikit-learn
+imageio

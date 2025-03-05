@@ -6,21 +6,20 @@ __pycache__/
 
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
+logs/train/Checkpoints
+logs/train/Checkpoints_90%
+logs/test/outputs_90%
 
 # Ignore logs, temp files, and checkpoints
 checkpoints/
 
-# Ignore configuration files (if they contain secrets)
+# Ignore configuration files 
 configs/
 
-# Ignore large datasets (if they are not meant to be version-controlled)
+# Ignore large datasets 
 data/
 
-# Ignore environment files (if using virtual environments)
-venv/
-.env
-
-# Ignore model-related large files (if applicable)
+# Ignore model-related large files 
 model/pretrained_unet.py
 model/__pycache__
 model/.ipynb_checkpoints

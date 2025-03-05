@@ -5,9 +5,8 @@ import os
 import imageio
 import numpy as np
 import torch
-import yaml
 from PIL import Image
-from sklearn.metrics import f1_score, mean_absolute_error
+from sklearn.metrics import mean_absolute_error
 from torch.autograd import Variable
 from torchvision import transforms
 
@@ -26,16 +25,12 @@ opt = parser.parse_args()
 
 class Test(object):
     def __init__(self):
-        self._init_configure()
         self._init_logger()
         self.model_1 = MutualExemplarUNet()
         self.model_2 = MutualExemplarUNet()
         self.model_3 = MutualExemplarUNet()
 
-    def _init_configure(self):
-        with open('configs/config.yml') as fp:
-            self.cfg = yaml.safe_load(fp)
-
+    
     def _init_logger(self):
 
         log_dir = 'logs/' + opt.dataset + '/test'
@@ -53,9 +48,9 @@ class Test(object):
         self.image_save_path_3 = log_dir + "/saved_images_3"
         create_dir(self.image_save_path_3)
 
-        self.model_1_load_path = 'logs/' + opt.dataset + '/train/Checkpoints/Model_1.pth'
-        self.model_2_load_path = 'logs/' + opt.dataset + '/train/Checkpoints/Model_2.pth'
-        self.model_3_load_path = 'logs/' + opt.dataset + '/train/Checkpoints/Model_3.pth'
+        self.model_1_load_path = 'logs/' + opt.dataset + '/train/Checkpoints_5%/Model_1.pth'
+        self.model_2_load_path = 'logs/' + opt.dataset + '/train/Checkpoints_5%/Model_2.pth'
+        self.model_3_load_path = 'logs/' + opt.dataset + '/train/Checkpoints_5%/Model_3.pth'
 
 
     def visualize_val_input(self, var_map, i):
