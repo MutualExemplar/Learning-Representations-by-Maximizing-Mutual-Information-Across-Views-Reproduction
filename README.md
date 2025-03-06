@@ -11,7 +11,7 @@ This repository contains the implementation of **Mutual Exemplar**, a novel **co
 
 ## **Paper Detailes**
 - **Title:** Learning Representations by Maximizing Mutual Information Across Views for Medical Image Segmentation
-- **Authors:** Weihao Weng, Xin Zhu*
+- **Authors:** Weihao Weng, Xin Zhu
 - **Conference:** MICCAI 2024
 - **Paper URL:** [Link to the Paper](https://papers.miccai.org/miccai-2024/paper/0103_paper.pdf)
 
@@ -26,7 +26,7 @@ cd Learning-Representations-by-Maximizing-Mutual-Information-Across-Views-Reprod
 ```
 ---
 
-- Python 3.8 
+- Python 3.9
 - Install dependencies using `requirements.txt`:
   ```bash
   pip install -r requirements.txt
