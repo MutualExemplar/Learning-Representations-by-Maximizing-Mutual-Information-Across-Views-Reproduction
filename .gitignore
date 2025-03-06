@@ -6,9 +6,10 @@ __pycache__/
 
 # Ignore Jupyter Notebook checkpoints
 .ipynb_checkpoints/
-logs/train/Checkpoints
-logs/train/Checkpoints_90%
-logs/test/outputs_90%
+logs/kvasir/train/Checkpoints
+logs/kvasir/train/Checkpoints_90%/
+logs/kvasir/test/outputs
+logs/kvasir/test/outputs_90%
 
 # Ignore logs, temp files, and checkpoints
 checkpoints/
