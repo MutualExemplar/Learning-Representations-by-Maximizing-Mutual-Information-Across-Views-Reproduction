@@ -24,7 +24,6 @@ This repository contains the implementation of **Mutual Exemplar**, a novel **co
 git clone https://github.com/MutualExemplar/Learning-Representations-by-Maximizing-Mutual-Information-Across-Views-Reproduction.git
 cd Learning-Representations-by-Maximizing-Mutual-Information-Across-Views-Reproduction
 ```
-
 ---
 
 - Python 3.8 
