@@ -34,7 +34,7 @@ class Test(object):
     def _init_logger(self):
 
         log_dir = 'logs/' + opt.dataset + '/test'
-        output_dir = os.path.join(log_dir, 'outputs')
+        output_dir = os.path.join(log_dir, 'outputs_5%')
         create_dir(output_dir)
 
         self.logger = get_logger(output_dir)
@@ -57,7 +57,12 @@ class Test(object):
         count = i
         im = transforms.ToPILImage()(var_map.squeeze_(0).detach().cpu()).convert("RGB")
         name = '{:02d}_input.png'.format(count)
+
+        # Save input images in all saved_images directories
         imageio.imwrite(self.image_save_path_1 + "/val_" + name, im)
+        imageio.imwrite(self.image_save_path_2 + "/val_" + name, im)
+        imageio.imwrite(self.image_save_path_3 + "/val_" + name, im)
+
 
     def visualize_gt(self, var_map, i):
         count = i
@@ -230,6 +235,11 @@ class Test(object):
         
         self.model_3.load_state_dict(torch.load(self.model_3_load_path))
         self.model_3.cuda()
+        
+        print("Model 1 sample weights:", list(self.model_1.state_dict().values())[0].flatten()[:5])
+        print("Model 2 sample weights:", list(self.model_2.state_dict().values())[0].flatten()[:5])
+        print("Model 3 sample weights:", list(self.model_3.state_dict().values())[0].flatten()[:5])
+
         
         image_root = './data/'+ opt.dataset +'/train/image/'
         gt_root = './data/'+ opt.dataset +'/train/mask/'

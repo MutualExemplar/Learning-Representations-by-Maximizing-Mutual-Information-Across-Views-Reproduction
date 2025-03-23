@@ -2,6 +2,7 @@ import os
 import torch
 import torch.optim as optim
 import argparse
+import torch.nn.functional as F
 from datetime import datetime
 from torch.autograd import Variable
 from model.mutual_exemplar_unet import MutualExemplarUNet
@@ -15,7 +16,7 @@ from metrics import evaluate_metrics
 parser = argparse.ArgumentParser()
 parser.add_argument('--epoch', type=int, default=100, help='Number of epochs')
 parser.add_argument('--lr', type=float, default=1e-4, help='Learning rate')
-parser.add_argument('--batchsize', type=int, default=16, help='Batch size')
+parser.add_argument('--batchsize', type=int, default=4, help='Batch size')
 parser.add_argument('--trainsize', type=int, nargs=2, default=[512, 288], help='Training image size (H, W)')
 parser.add_argument('--dataset', type=str, default='kvasir', help='Dataset name')
 parser.add_argument('--ratio', type=float, default=0.1, help='Ratio of labeled data')
@@ -24,7 +25,7 @@ opt = parser.parse_args()
 # **🔹 Device Configuration**
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 LOG_DIR = "logs/kvasir/train/"
-CHECKPOINT_DIR = os.path.join(LOG_DIR, "Checkpoints")
+CHECKPOINT_DIR = os.path.join(LOG_DIR, "Checkpoints_5%")
 os.makedirs(CHECKPOINT_DIR, exist_ok=True)
 
 # # **🔹 Initialize Logger**
@@ -71,7 +72,7 @@ for epoch in range(opt.epoch):
 
     total_loss, sup_loss, soft_loss, cont_loss = 0, 0, 0, 0
 
-    for batch_labeled, batch_unlabeled in zip(train_loader_labeled, train_loader_unlabeled):
+    for i, (batch_labeled, batch_unlabeled) in enumerate(zip(train_loader_labeled, train_loader_unlabeled)):
         # **🔹 Process Labeled Data**
         images_F1, images_F2, images_F3, masks = batch_labeled
         images_F1, images_F2, images_F3, masks = (
@@ -108,59 +109,89 @@ for epoch in range(opt.epoch):
         # Feature map pseudo-label (projector output)
         pseudo_Yf = (feat_U1 + feat_U2 + feat_U3) / 3  # Average feature maps
         pseudo_Yf = pseudo_Yf / (pseudo_Yf.norm(p=2, dim=1, keepdim=True) + 1e-6)  # L2-normalization
+        if pseudo_Yf_memory is not None:
+            pseudo_Yf = pseudo_Yf_memory
 
         # Prediction pseudo-label (classifier output)
         pseudo_Yp = (torch.sigmoid(pred_U1) + torch.sigmoid(pred_U2) + torch.sigmoid(pred_U3)) / 3
         pseudo_Yp_hard = (pseudo_Yp > threshold).float()  # Hard labels where confident
         pseudo_Yp = pseudo_Yp_hard * pseudo_Yp + (1 - pseudo_Yp_hard) * pseudo_Yp  # Hybrid pseudo-labels
+        if pseudo_Yp_memory is not None:
+            pseudo_Yp = pseudo_Yp_memory
 
+             
+        def extract_features(feature_map):
+            """
+            Converts 4D feature maps into 2D feature vectors.
+            Ensures the input tensor has the correct shape before applying pooling.
+            """
+            # 🔹 Print shape for debugging
+            #print(f"Feature Map Shape Before Pooling: {feature_map.shape}")
 
-        # **🔹 Compute Contrastive Loss**
+            # 🔹 Ensure feature_map is 4D (B, C, H, W)
+            if feature_map.dim() == 2:  
+                feature_map = feature_map.unsqueeze(-1).unsqueeze(-1)  # Convert (B, C) → (B, C, 1, 1)
+            elif feature_map.dim() == 3:
+                feature_map = feature_map.unsqueeze(0)  # Convert (C, H, W) → (1, C, H, W)
+            elif feature_map.dim() < 2:
+                raise ValueError(f"Unexpected feature map shape: {feature_map.shape}")
+
+            # 🔹 Now apply Adaptive Average Pooling
+            feature_map = F.adaptive_avg_pool2d(feature_map, (1, 1))  # Convert (B, C, H, W) → (B, C, 1, 1)
+            feature_map = feature_map.squeeze(-1).squeeze(-1)  # Convert (B, C, 1, 1) → (B, C)
+
+            # 🔹 Print shape after pooling
+            #print(f"Feature Map Shape After Pooling: {feature_map.shape}")
+
+            return feature_map
+        
+        pseudo_Yf = extract_features(pseudo_Yf)
+        # ✅ Now compute contrastive loss with 2D feature vectors
         contrastive_loss = contrastive_loss_fn(feat_F1, feat_F2, feat_F3, pseudo_Yf)
 
         # **🔹 Compute Soft Supervised Loss for Unlabeled Data**
         soft_supervised_loss = loss_soft(pred_U1, pred_U2, pred_U3, pseudo_Yp)
 
-        # **🔹 Compute Total Loss**
-        loss = supervised_loss + soft_supervised_loss + contrastive_loss
-
-        
         unsupervised_loss = loss_unsup(pred_U1, pred_U2, pred_U3, pseudo_Yp, feat_F1, feat_F2, feat_F3, pseudo_Yf)
+        
+        # **🔹 Compute Total Loss**
+        loss = supervised_loss.mean() + soft_supervised_loss.mean() + contrastive_loss + unsupervised_loss.mean()
 
         # Compute supervised loss for current pseudo-labels
         current_supervised_loss = loss_sup(pred_F1, pred_F2, pred_F3, masks)
 
         # If new loss is lower, update pseudo-labels
-        if current_supervised_loss < best_supervised_loss:
-            best_supervised_loss = current_supervised_loss
+        if current_supervised_loss.mean().item() < best_supervised_loss:
+            best_supervised_loss = current_supervised_loss.mean().item()  
             pseudo_Yf_memory = pseudo_Yf.clone().detach()
             pseudo_Yp_memory = pseudo_Yp.clone().detach()
-            #print(f"✅ Updated pseudo-labels at epoch {epoch} with lower loss: {best_supervised_loss.item():.4f}")
-
+           
         optimizer.zero_grad()
-        supervised_loss.backward()
-        # for name, param in model_F1.named_parameters():
-        #     if param.grad is not None and torch.isnan(param.grad).any():
-        #         print(f"⚠ NaN detected in gradients of {name}")
-                
+        supervised_loss.mean().backward()
+        
         torch.nn.utils.clip_grad_norm_(model_F1.parameters(), max_norm=1.0)
         torch.nn.utils.clip_grad_norm_(model_F2.parameters(), max_norm=1.0)
         torch.nn.utils.clip_grad_norm_(model_F3.parameters(), max_norm=1.0)
+        
         optimizer.step()
+        
+        if (i + 1) % 5 == 0:  
+            torch.cuda.empty_cache()
 
+        total_loss += loss.mean().item()
+        sup_loss += supervised_loss.mean().item()
+        soft_loss += soft_supervised_loss.mean().item()
+        cont_loss += contrastive_loss.mean().item()
 
-        total_loss += loss.item()
-        sup_loss += supervised_loss.item()
-        soft_loss += soft_supervised_loss.item()
-        cont_loss += contrastive_loss.item()
 
     # **🔹 Validation**
-    model_F1.eval()
-    model_F2.eval()
-    model_F3.eval()
-    dice_scores = []
-
     with torch.no_grad():
+        model_F1.eval()
+        model_F2.eval()
+        model_F3.eval()
+
+        dice_scores = []
+
         for val_batch in val_loader:
             images, masks = val_batch
             images, masks = images.to(DEVICE), masks.to(DEVICE)
